@@ -11,10 +11,14 @@ namespace AdventureGame
             string userName1 = null;
             string userName2 = null;
             string user1Gender = null;
+            string user2Gender = null;
             string user1 = null;
-            List <string> maleName = new List <string> { };
+            List <string> maleName = new List <string> {null};
+            List<string> femaleName = new List<string> {null};
             Instructions(out userName1, out userName2, user1Gender, maleName);
-            user1 = Scene1(userName1, user1);
+            GenderFind(maleName, userName1, femaleName, out user1Gender, out user2Gender, userName2);
+            
+            user1 = Scene1(userName1, user1, userName2, user1Gender, user2Gender);
             if (user1 == "a" || user1 == "finish eating")
             {
                 MirrorScene(userName1, user1);
@@ -24,7 +28,6 @@ namespace AdventureGame
 
             }
         }
-
         static void Instructions(out string userName1, out string userName2, string user1Gender, List<string> maleName)
         {
             Console.WriteLine("Welcome to my Drama adventure game.");
@@ -38,14 +41,15 @@ namespace AdventureGame
             Console.WriteLine("Player 2, what is your name?");
             userName2 = Console.ReadLine();
             userName2 = userName2.ToUpper();
-            GenderFind(maleName, userName1);
+            
             
             Console.WriteLine($"Your name is {userName1}, you are a high school student. Your best friend is named {userName2}.");
             Console.WriteLine($"{userName1}, you live at home with Mum and Dad. School is hard, your dad is an alcoholic, everything seems to be coming apart. \n");
         }
-        static string Scene1(string userName1, string user1)
+        static string Scene1(string userName1, string user1, string userName2, string user1Gender, string user2Gender)
         {
             Console.Clear();
+            Console.WriteLine($"{userName1} you are a {user1Gender}. {userName2} you are a {user2Gender}.");
             Console.WriteLine("Dad walks into the kitchen. You are eating cereal. He takes a stare at you then leaves.");
             Console.WriteLine($"{userName1} What do you do?");
             Console.WriteLine("A: finish eating. B: Ask him to come back. /n");
@@ -63,29 +67,78 @@ namespace AdventureGame
             user1 = user1.ToLower();
             return user1;
         }
-        static void GenderFind(List<string> maleName, string userName1)
+        static void GenderFind(List<string> maleName, string userName1, List<string> femaleName, out string user1Gender, out string user2Gender, string userName2)
         {
-            string user1GenderM = null;
-            string user1GenderF = null;
-            StreamReader read = new StreamReader("MaleNames.txt");
-            while(user1GenderM != userName1)
-            {
-                user1GenderM = read.ReadLine();
-            }
+            string nameStringM = null;
+            string nameStringF = null;
+            user1Gender = null;
+            user2Gender = null;
             
-            if (user1GenderM == userName1)
+            //User 1 Gender finding
+            int countM = 0;
+            StreamReader read = new StreamReader("MaleNames.txt");
+            while(read.EndOfStream == false)
             {
-                Console.WriteLine("Your a male");
+                nameStringM = read.ReadLine();
+                maleName.Add(nameStringM);
             }
-            else
+            for (int i = 0; i < maleName.Count; i++)
             {
-                StreamReader read1 = new StreamReader("FemaleNames.txt");
-                while (user1GenderF != userName1)
+                if (userName1 == maleName[countM])
                 {
-                    user1GenderF = read1.ReadLine();
+                    user1Gender = "male";
                 }
-                Console.WriteLine("Your a female");
+                countM++;
             }
+            int countF = 0;
+            StreamReader read1 = new StreamReader("FemaleNames.txt");
+            while (read1.EndOfStream == false)
+            {
+               nameStringF = read1.ReadLine();
+               femaleName.Add(nameStringF);
+            }
+            for (int i = 0; i < femaleName.Count; i++)
+            {
+                if (userName1 == femaleName[countF])
+                {
+                    user1Gender = "female";
+                }
+                countF++;
+            }
+
+            //User 2 Gender finding
+            int countM2 = 0;
+            StreamReader read2 = new StreamReader("MaleNames.txt");
+            while (read2.EndOfStream == false)
+            {
+                nameStringM = read2.ReadLine();
+                maleName.Add(nameStringM);
+            }
+            for (int i = 0; i < maleName.Count; i++)
+            {
+                if (userName2 == maleName[countM2])
+                {
+                    user2Gender = "male";
+                }
+                countM2++;
+            }
+            int countF2 = 0;
+            StreamReader read3 = new StreamReader("FemaleNames.txt");
+            while (read3.EndOfStream == false)
+            {
+                nameStringF = read3.ReadLine();
+                femaleName.Add(nameStringF);
+            }
+            Console.WriteLine();
+            for (int i = 0; i < femaleName.Count; i++)
+            {
+                if (userName2 == femaleName[countF2])
+                {
+                    user2Gender = "female";
+                }
+                countF2++;
+            }
+            Console.WriteLine();
         }
     }
 }
